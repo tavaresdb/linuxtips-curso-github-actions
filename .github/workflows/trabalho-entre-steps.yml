@@ -1,0 +1,18 @@
+name: Arquivos compartilhados entre os steps
+
+# Definicao do gatilho de execucao - esse tipo de gatilho exigira acao manual
+on:
+  workflow_dispatch
+
+jobs:
+  entre-steps:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Confere Versao do Ubuntu
+        run: cat /etc/os-release
+
+      - name: Gravar uma mensagem
+        run: echo "Estou fazendo o curso de Github Actions da LinuxTips" > mensagem.txt
+
+      - name: Ler uma mensagem
+        run: cat mensagem.txt

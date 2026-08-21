@@ -1,0 +1,41 @@
+name: Arquivos compartilhados entre os jobs
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Gravar uma mensagem
+        run: echo "Estou fazendo o curso de Github Actions da LinuxTips" > ${{ github.workspace }}/mensagem.txt
+
+      # Acesse a DOC para maiores informacoes - https://github.com/actions/upload-artifact
+      - uses: actions/upload-artifact@v4
+        with:
+          name: strigus-upload
+          path: ${{ github.workspace }}/mensagem.txt
+
+  job2:
+    runs-on: ubuntu-latest
+    needs: job1
+    steps:
+      - name: Visualizar arquivos do diretorio - pt. 1
+        run: ls -la
+
+      # Acesse a DOC para maiores informacoes - https://github.com/actions/download-artifact
+      - uses: actions/download-artifact@v4
+        with:
+          name: strigus-upload
+          path: strigus
+
+      - name: Mover uma mensagem
+        run: mv strigus/mensagem.txt . && rm -rf .strigus/
+
+      - name: Visualizar arquivos do diretorio - pt. 2
+        run: ls -la
+
+      - name: Ler uma mensagem
+        run: cat mensagem.txt

@@ -1,0 +1,19 @@
+# Ao inves do termo "pipeline", o Github Actions usa o termo "workflow", pois alem de ser utilizado em pipelines de CI/CD, pode ser usado em diferentes tipos de automacao
+name: Primeiro Workflow LinuxTips
+
+# Definicao do gatilho de execucao
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  giropops:
+    # https://docs.github.com/pt/actions/how-tos/manage-runners/github-hosted-runners/use-github-hosted-runners
+    runs-on: ubuntu-latest
+    steps:
+      - name: Confere Versao do Ubuntu
+        run: cat /etc/os-release
+
+      - name: Exibir uma mensagem
+        run: echo "Estou fazendo o curso de Github Actions da LinuxTips"

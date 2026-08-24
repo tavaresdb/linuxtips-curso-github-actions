@@ -7,7 +7,7 @@ on:
         description: 'Validacao da imagem escolhida pelo usuario'
         required: false
         default: 'postgres:latest'
-        type: strig
+        type: string
 
 jobs:
   desafio:

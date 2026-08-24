@@ -1,0 +1,30 @@
+name: Validacao de imagens de container
+
+on:
+  workflow_dispatch:
+    inputs:
+      validaImagem:
+        description: 'Validacao da imagem escolhida pelo usuario'
+        required: false
+        default: 'postgres:latest'
+        type: strig
+
+jobs:
+  desafio:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar a imagem
+        run: |
+          docker pull ${{ github.event.inputs.validaImagem }}
+
+      - name: Ler a imagem
+        run: |
+          IMAGE_NAME=$(echo "${{ github.event.inputs.validaImagem }}" | cut -d ':' -f 1)
+          docker images | grep $IMAGE_NAME
+
+      # Acesse a DOC para maiores informacoes - https://github.com/docker/scout-action
+      - name: Scan com o Docker Scout
+        uses: docker/scout-action@v1
+        with:
+          image: ${{ github.event.inputs.validaImagem }}
+          only-severities: critical,high

@@ -1,9 +1,7 @@
 name: Arquivos compartilhados entre os jobs
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch
 
 jobs:
   job1:

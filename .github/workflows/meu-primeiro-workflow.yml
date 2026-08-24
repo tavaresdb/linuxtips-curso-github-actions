@@ -3,9 +3,7 @@ name: Primeiro Workflow LinuxTips
 
 # Definicao do gatilho de execucao
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch
 
 jobs:
   giropops:

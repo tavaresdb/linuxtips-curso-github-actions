@@ -1,6 +1,5 @@
 name: Arquivos compartilhados entre os steps
 
-# Definicao do gatilho de execucao - esse tipo de gatilho exigira acao manual
 on:
   workflow_dispatch
 

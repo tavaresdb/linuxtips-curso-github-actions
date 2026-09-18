@@ -23,9 +23,13 @@ Um pull request bem feito precisa ter um título claro e uma descrição útil. 
 Dentro de um pull request, é possível analisar os commits enviados, os arquivos alterados e as diferenças entre a versão atual da branch de destino e a versão proposta. Essa comparação facilita muito a revisão, porque mostra exatamente quais linhas foram adicionadas, removidas ou modificadas. Além disso, o pull request concentra a discussão sobre aquela mudança em um único lugar. Caso algo não esteja adequado, outras pessoas podem pedir ajustes, sugerir melhorias ou questionar decisões antes que o código seja integrado.
 
 ## Branch Protection Rule
-Aqui vamos ver como usar regras de proteção de branch no GitHub para controlar melhor o fluxo de trabalho com git flow e pull requests. A ideia principal é impedir que alterações cheguem diretamente na branch principal sem passar por um processo mínimo de revisão. Esse tipo de configuração ajuda a transformar o fluxo combinado anteriormente em uma regra aplicada pelo próprio repositório, e não apenas em uma combinação informal entre as pessoas do time.
+Podemos usar regras de proteção de branch no GitHub para controlar melhor o fluxo de trabalho com git flow e pull requests. A ideia principal é impedir que alterações cheguem diretamente na branch principal sem passar por um processo mínimo de revisão. Esse tipo de configuração ajuda a transformar o fluxo combinado anteriormente em uma regra aplicada pelo próprio repositório, e não apenas em uma combinação informal entre as pessoas do time.
 
-Começamos nas configurações do repositório, na área de branches e regras de proteção. O GitHub oferece o modelo clássico de branch protection rules e também o modelo mais novo de rulesets. O foco fica nos rulesets, que permitem criar regras aplicadas a branches específicas, à branch padrão ou até a padrões de nomes, como branches de staging, hotfix ou qualquer outra nomenclatura usada pelo time. No exemplo, a regra criada recebe o objetivo de bloquear push direto para a main, que é a branch principal do repositório.
+![](img/ruleset.png)
+
+Começamos nas configurações do repositório, na área de branches e regras de proteção. O GitHub oferece o modelo clássico de branch protection rules e também o modelo mais novo de rulesets. O foco fica nos rulesets, que permitem criar regras aplicadas a branches específicas, à branch padrão ou até a padrões de nomes, como branches de staging, hotfix ou qualquer outra nomenclatura usada pelo time. No exemplo, a regra criada recebe o objetivo de bloquear push direto para a main, que é a branch principal do repositório:
+
+![](img/ruleset-1.png)
 
 Durante a criação da regra, é possível definir o status de aplicação da regra, selecionar quem poderia fazer bypass e escolher o alvo da proteção. A branch protegida foi a branch padrão, representando a main. Isso significa que qualquer tentativa de alteração direta nessa branch precisa respeitar as condições configuradas no ruleset.
 
@@ -35,4 +39,15 @@ Também podemos configurar a exigência de pelo menos uma aprovação no pull re
 
 Outro detalhe importante é a opção que invalida aprovações anteriores quando novos commits são adicionados ao pull request. Isso faz sentido porque uma aprovação dada para uma versão anterior do código não deveria necessariamente continuar válida depois que novas mudanças são enviadas. Assim, se alguém aprovar um PR e depois o autor adicionar outro commit, a revisão precisa considerar o conteúdo mais recente. Também vale comentar a possibilidade de exigir que conversas abertas no pull request sejam resolvidas antes do merge, o que evita integrar mudanças enquanto ainda existem discussões pendentes.
 
-![](img/ruleset.png)
+![](img/ruleset-2.png)
+
+### Codeowners
+O CODEOWNERS é um arquivo sem extensão que pode ser criado dentro da pasta .github. Nele, definimos padrões de caminho e associamos esses caminhos a usuários ou times responsáveis. Assim, quando um pull request altera arquivos dentro de uma pasta específica, o GitHub pode vincular automaticamente os revisores definidos para aquele trecho do repositório. Esse comportamento é muito útil em projetos maiores, onde diferentes áreas têm responsáveis diferentes. Por exemplo, alterações na pasta app podem ser revisadas por uma pessoa ou time ligado à aplicação, enquanto mudanças na pasta iac podem ser direcionadas para quem cuida de infraestrutura como código.
+
+Para testar esse funcionamento, podemos criar uma estrutura simples no repositório, com uma pasta app contendo um arquivo app.js e uma pasta iac contendo arquivos relacionados a Terraform. Em seguida, o arquivo CODEOWNERS deve ser configurado para associar cada uma dessas pastas a revisores específicos. A lógica usada segue padrões de caminho, como aplicar uma regra para qualquer coisa dentro de uma pasta. Também é possível criar uma regra mais ampla usando um coringa, indicando um responsável geral para arquivos que não se encaixem em regras mais específicas.
+
+Um ponto importante é entender a precedência das regras dentro do CODEOWNERS. Quando mais de uma regra pode combinar com o mesmo arquivo, a ordem em que elas aparecem no arquivo faz diferença. Regras mais genéricas, como uma regra para qualquer arquivo do repositório, devem ser posicionadas de forma que não sobrescrevam regras mais específicas. Se existir uma regra para toda a pasta iac e outra para uma subpasta como iac/compliance, a regra mais específica precisa ficar organizada corretamente para que o GitHub direcione o pull request ao responsável certo. Caso contrário, uma regra mais ampla pode acabar prevalecendo sobre a regra desejada.
+
+Outro ponto, ter apenas o arquivo CODEOWNERS no repositório não basta para exigir formalmente a aprovação dessas pessoas. Dentro das regras de proteção da branch, é necessário habilitar a opção que exige review dos code owners antes do merge. Com essa configuração ativa, não é qualquer pessoa do projeto que consegue aprovar a mudança quando ela altera uma área protegida por ownership. O pull request precisa receber a aprovação de quem está listado como responsável pelo caminho alterado.
+
+Em resumo, o CODEOWNERS se mostra como uma ferramenta importante para organizar responsabilidades dentro de um repositório. Ele ajuda a conectar áreas do código com pessoas ou times responsáveis, melhora o fluxo de revisão e reforça as regras de proteção de branch. Em conjunto com pull requests, Git Flow e rulesets, esse recurso torna o processo de colaboração mais controlado e mais próximo do que acontece em ambientes profissionais.

@@ -1,7 +1,7 @@
 name: Validacao de Ambiente
 
 on:
-  workflow_dispatch
+  workflow_dispatch:
 
 jobs:
   valida-ambiente-prd:

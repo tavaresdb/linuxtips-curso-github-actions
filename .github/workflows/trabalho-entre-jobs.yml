@@ -1,7 +1,7 @@
 name: Arquivos compartilhados entre os jobs
 
 on:
-  workflow_dispatch
+  workflow_dispatch:
 
 jobs:
   job1:

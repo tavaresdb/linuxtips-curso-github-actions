@@ -1,4 +1,4 @@
-name: Validação de Ambiente
+name: Validacao de Ambiente
 
 on:
   workflow_dispatch

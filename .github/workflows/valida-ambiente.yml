@@ -3,10 +3,10 @@ name: Validacao de Ambiente
 on:
   workflow_dispatch:
 
+env:
+  VARIAVEL_GLOBAL: GithubActions
+
 jobs:
-  env:
-    VARIAVEL_GLOBAL: GithubActions
-  
   valida-ambiente-prd:
     env:
       VARIAVEL_JOB: JobPrd
@@ -29,4 +29,4 @@ jobs:
       - name: Exibe valor
         env:
           VARIAVEL_STEP: StepDev
-        run: echo "Estou no ambiente de ${{ vars.AMBIENTE }}, validando a minha variável global ${{ env.VARIAVEL_GLOBAL }}, minha variável de job ${{ env.VARIAVEL_JOB }} e minha variável de step ${{ env.VARIAVEL_STEP }"
+        run: echo "Estou no ambiente de ${{ vars.AMBIENTE }}, validando a minha variável global ${{ env.VARIAVEL_GLOBAL }}, minha variável de job ${{ env.VARIAVEL_JOB }} e minha variável de step ${{ env.VARIAVEL_STEP }}"

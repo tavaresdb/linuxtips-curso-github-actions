@@ -4,18 +4,29 @@ on:
   workflow_dispatch:
 
 jobs:
+  env:
+    VARIAVEL_GLOBAL: GithubActions
+  
   valida-ambiente-prd:
+    env:
+      VARIAVEL_JOB: JobPrd
     if: github.ref_name == 'main'
     runs-on: ubuntu-latest
     environment: production
     steps:
       - name: Exibe valor
-        run: echo "Estou no ambiente de ${{ vars.AMBIENTE }}"
+        env:
+          VARIAVEL_STEP: StepPrd
+        run: echo "Estou no ambiente de ${{ vars.AMBIENTE }}, validando a minha variável global ${{ env.VARIAVEL_GLOBAL }}, minha variável de job ${{ env.VARIAVEL_JOB }} e minha variável de step ${{ env.VARIAVEL_STEP }}"
 
   valida-ambiente-dev:
+    env:
+      VARIAVEL_JOB: JobDev
     if: github.ref_name == 'develop'
     runs-on: ubuntu-latest
     environment: development
     steps:
       - name: Exibe valor
-        run: echo "Estou no ambiente de ${{ vars.AMBIENTE }}"
+        env:
+          VARIAVEL_STEP: StepDev
+        run: echo "Estou no ambiente de ${{ vars.AMBIENTE }}, validando a minha variável global ${{ env.VARIAVEL_GLOBAL }}, minha variável de job ${{ env.VARIAVEL_JOB }} e minha variável de step ${{ env.VARIAVEL_STEP }"

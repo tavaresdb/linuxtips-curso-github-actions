@@ -8,7 +8,7 @@ jobs:
     steps:
       - name: Testes de cobertura
         id: teste-cobertura #STEP ID = teste-cobertura
-        run: echo "porcentagem=12" >> "$GITHUB_OUTPUT"
+        run: echo "porcentagem=85" >> "$GITHUB_OUTPUT"
     outputs: 
       teste-cobertura: ${{ steps.teste-cobertura.outputs.porcentagem }}
 

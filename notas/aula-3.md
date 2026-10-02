@@ -1,0 +1,6 @@
+# Identificadores
+Quando vários jobs coexistem no mesmo workflow sem `needs`, o GitHub tenta executá-los em paralelo. Em um pipeline com build, teste e deploy no mesmo arquivo, isso significa que deploy e teste rodariam ao mesmo tempo que o build — e falhariam porque os artefatos ainda não existem. A chave `needs` resolve isso declarando explicitamente de quais jobs um job depende antes de iniciar.
+
+IDs de jobs são os próprios nomes definidos no YAML. O job `build` é referenciado como `jobs.build`; `quality-gate` vira `jobs.quality-gate`. Dois jobs com o mesmo nome quebram o workflow antes mesmo de executar. Já os steps aceitam `name` repetido sem erro imediato, o que pode gerar confusão ao referenciar um step específico — daí a importância da chave `id`, que deve ser única dentro do job.
+
+Regras dos IDs: sempre minúsculo, sem espaços (use hífens para nomes compostos), não pode começar com número (mas pode conter números depois da primeira letra). Violar qualquer regra impede a execução.

@@ -1,0 +1,93 @@
+name: Pipeline Completo
+
+on:
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install deps
+        working-directory: app
+        run: npm ci
+
+      - name: Lint NPM
+        working-directory: app
+        run: npm run lint
+
+  unit:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install deps
+        working-directory: app
+        run: npm ci
+
+      - name: Run unit tests
+        id: test
+        working-directory: app
+        run: |
+          npm test
+          echo "coverage=$(jq -r '.total.lines.pct' coverage/coverage-summary.json)" >> "$GITHUB_OUTPUT"
+    outputs:
+      coverage: ${{ steps.test.outputs.coverage }}
+
+  docker:
+    permissions:
+      contents: read
+      packages: write
+    needs: unit
+    if: ${{ fromJSON(needs.unit.outputs.coverage) > 80 }}
+    runs-on: ubuntu-latest
+    env:
+      GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Build
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Docker Image
+        id: build_push
+        run: |
+          repo_lc=$(echo "${GITHUB_REPOSITORY}" | tr '[:upper:]' '[:lower:]')
+          image="ghcr.io/${repo_lc}/app-senha:${GITHUB_SHA}"
+          docker build \
+            --build-arg GH_PACKAGES_TOKEN \
+            -t "$image" \
+            app
+          docker push "$image"
+          echo "image=$image" >> "$GITHUB_OUTPUT"
+    outputs:
+      image: ${{ steps.build_push.outputs.image }}
+
+  deploy:
+    needs: docker
+    environment: ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print image
+        run: echo "Deploying ${{ needs.docker.outputs.image }} to ${{ inputs.environment }}"

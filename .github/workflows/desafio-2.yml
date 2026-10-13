@@ -2,6 +2,13 @@ name: Pipeline Completo
 
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: Ambiente de destino
+        required: true
+        default: development
+        type: choice
+        options: [development, production]
 
 jobs:
   lint:

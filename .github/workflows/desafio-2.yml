@@ -55,7 +55,7 @@ jobs:
       contents: read
       packages: write
     needs: unit
-    if: ${{ fromJSON(needs.unit.outputs.coverage) > 80 }}
+    if: ${{ fromJSON (needs.unit.outputs.coverage) >= 80 }}
     runs-on: ubuntu-latest
     env:
       GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -4,7 +4,7 @@ O objetivo da aplicação é construir um medidor de força de senhas:
 - Entrada: uma string de senha.
 - Processo: verificação de tamanho e presença de caracteres maiúsculos, minúsculos, dígitos e símbolos.
 - Saída: rótulo fraca, média ou forte.
- 
+
 O código e os testes já estão prontos. A missão é garantir que nada chegue à branch principal sem antes passar pelos testes. Para isso, precisamos criar um workflow GitHub Actions com as seguintes etapas:
 
 - Lint: o pipeline começa com validação de lint (`npm run lint`) e também do Jest configurado no projeto. Essa é a porta de entrada: se o código não passar no lint, nada mais deve rodar.
